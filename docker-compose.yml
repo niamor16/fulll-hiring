@@ -1,0 +1,7 @@
+services:
+  backend-php:
+    container_name: backend-php
+    build: ./docker/php
+    working_dir: /app
+    volumes:
+      - ./Backend/PHP/Boilerplate:/app

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Behat\Behat\Context\Context;
 use Fulll\App\Calculator;
 
+#[\AllowDynamicProperties]
 class FeatureContext implements Context
 {
     /**
