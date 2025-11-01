@@ -10,4 +10,4 @@ backend-sh:
 	docker exec -it backend-php sh
 
 test-backend:
-	docker compose run --rm backend-php vendor/bin/behat
+	docker compose run --rm backend-php vendor/behat/behat/bin/behat
