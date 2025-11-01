@@ -6,8 +6,10 @@ use Behat\Behat\Context\Context;
 use Fulll\App\Calculator;
 use Fulll\App\Command\Fleet\RegisterVehicle;
 use Fulll\App\Handler\Fleet\RegisterVehicleHandler;
+use Fulll\App\Handler\Vehicle\ParkVehicleHandler;
 use Fulll\Domain\Model\Fleet\Fleet;
 use Fulll\Domain\Model\Fleet\FleetRepositoryInterface;
+use Fulll\Domain\Model\Vehicle\Location;
 use Fulll\Domain\Model\Vehicle\Vehicle;
 use Fulll\Domain\Model\Vehicle\VehicleRepositoryInterface;
 use Fulll\Infra\Persistence\InMemory\InMemoryFleetRepository;
@@ -19,6 +21,7 @@ class FeatureContext implements Context
     private FleetRepositoryInterface $fleetRepository;
     private VehicleRepositoryInterface $vehicleRepository;
     private RegisterVehicleHandler $registerVehicleHandler;
+    private ParkVehicleHandler $parkVehicleHandler;
 
     private int $myUserId = 1;
     private int $myFleetId = 1;
@@ -27,12 +30,14 @@ class FeatureContext implements Context
     private string $myVehiclePlate = 'AA-123-CD';
     private ?Vehicle $myVehicle = null;
     private ?string $lastError = null;
+    private ?Location $myLocation = null;
 
     public function __construct()
     {
         $this->fleetRepository = new InMemoryFleetRepository();
         $this->vehicleRepository = new InMemoryVehicleRepository();
         $this->registerVehicleHandler = new RegisterVehicleHandler($this->fleetRepository, $this->vehicleRepository);
+        $this->parkVehicleHandler = new ParkVehicleHandler($this->fleetRepository, $this->vehicleRepository);
     }
 
     /**
@@ -156,7 +161,9 @@ class FeatureContext implements Context
      */
     public function aLocation()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        if (is_null($this->myLocation)) {
+            $this->myLocation = new Location(45.78310313723511, 4.80946412181288);
+        }
     }
 
     /**
@@ -164,7 +171,12 @@ class FeatureContext implements Context
      */
     public function iParkMyVehicleAtThisLocation()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $command = new \Fulll\App\Command\Vehicle\ParkVehicule($this->myFleetId, $this->myVehiclePlate, $this->myLocation);
+        try {
+            $this->parkVehicleHandler->__invoke($command);
+        } catch (\Exception $exception) {
+            $this->lastError = $exception->getMessage();
+        }
     }
 
     /**
@@ -172,7 +184,19 @@ class FeatureContext implements Context
      */
     public function theKnownLocationOfMyVehicleShouldVerifyThisLocation()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $vehicule = $this->vehicleRepository->findByPlate($this->myVehiclePlate);
+        if (!$vehicule) {
+            throw new \RuntimeException('vehicule not found');
+        }
+
+        $location = $vehicule->getLocation();
+        if (
+            $location?->getAltitude() !== $this->myLocation->getAltitude()
+            || $location?->getLatitude() !== $this->myLocation->getLatitude()
+            || $location?->getLongitude() !== $this->myLocation->getLongitude()
+        ) {
+            throw new \RuntimeException(sprintf('%s is expected, got %s', $location, $this->myLocation));
+        }
     }
 
 //    ===============================================
@@ -182,7 +206,7 @@ class FeatureContext implements Context
      */
     public function myVehicleHasBeenParkedIntoThisLocation()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $this->iParkMyVehicleAtThisLocation();
     }
 
     /**
@@ -190,7 +214,7 @@ class FeatureContext implements Context
      */
     public function iTryToParkMyVehicleAtThisLocation()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $this->iParkMyVehicleAtThisLocation();
     }
 
     /**
@@ -198,6 +222,8 @@ class FeatureContext implements Context
      */
     public function iShouldBeInformedThatMyVehicleIsAlreadyParkedAtThisLocation()
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        if ($this->lastError !== 'This location is the already known location') {
+            throw new \RuntimeException(sprintf('I should be informed that my vehicle is already parked at this location : %s', $this->lastError));
+        }
     }
 }

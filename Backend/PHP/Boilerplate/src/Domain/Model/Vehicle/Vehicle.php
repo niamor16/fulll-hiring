@@ -6,6 +6,7 @@ namespace Fulll\Domain\Model\Vehicle;
 final class Vehicle
 {
     private string $plate;
+    private ?Location $location = null;
 
     public function __construct(string $plate)
     {
@@ -15,5 +16,24 @@ final class Vehicle
     public function getPlate(): string
     {
         return $this->plate;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(Location $location): self
+    {
+        if ($this->location?->getLongitude() === $location->getLongitude()
+            && $this->location?->getLatitude() === $location->getLatitude()
+            && $this->location?->getAltitude() === $location->getAltitude()
+        ) {
+            throw new \Exception('This location is the already known location');
+        }
+
+        $this->location = $location;
+
+        return $this;
     }
 }
