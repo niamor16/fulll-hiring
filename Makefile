@@ -20,3 +20,6 @@ test-backend:
 
 create-fleet:
 	docker compose run --rm backend-php bin/fleet create
+
+php-stan:
+	docker compose run --rm backend-php vendor/bin/phpstan analyse src
