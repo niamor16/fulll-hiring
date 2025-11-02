@@ -21,7 +21,7 @@ final class ParkVehicleHandler
     {
         $fleet = $this->fleetRepository->findById($command->getFleetId());
         if (!$fleet) {
-            throw new \Exception('No fleed found with id ' . $command->getFleetId());
+            throw new \Exception('No fleet found with id ' . $command->getFleetId());
         }
 
         $vehicle = $this->vehicleRepository->findByPlate($command->getVehiclePlate());

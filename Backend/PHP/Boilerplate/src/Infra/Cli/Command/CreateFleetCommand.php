@@ -19,13 +19,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateFleetCommand extends Command
 {
     private CreateUserFleetHandler $handler;
-    private FleetRepositoryInterface $fleetRepository;
 
     public function __construct()
     {
         parent::__construct();
-        $this->fleetRepository = new InMemoryFleetRepository();
-        $this->handler = new CreateUserFleetHandler($this->fleetRepository);
+        $fleetRepository = new InMemoryFleetRepository();
+        $this->handler = new CreateUserFleetHandler($fleetRepository);
     }
 
     protected function configure(): void

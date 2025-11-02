@@ -170,7 +170,7 @@ class FeatureContext implements Context
     public function aLocation()
     {
         if (is_null($this->myLocation)) {
-            $this->myLocation = new Location(45.78310313723511, 4.80946412181288);
+            $this->myLocation = Location::create(45.78310313723511, 4.80946412181288);
         }
     }
 

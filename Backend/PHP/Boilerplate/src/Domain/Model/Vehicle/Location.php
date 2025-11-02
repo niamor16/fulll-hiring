@@ -8,11 +8,16 @@ final class Location
     private float $longitude;
     private float $altitude;
 
-    public function __construct(float $latitude, float $longitude, float $altitude = 0)
+    private function __construct(float $latitude, float $longitude, float $altitude)
     {
         $this->latitude = $latitude;
         $this->longitude = $longitude;
         $this->altitude = $altitude;
+    }
+
+    static public function create(float $latitude, float $longitude, float $altitude = 0): self
+    {
+        return new self($latitude, $longitude, $altitude);
     }
 
     public function __toString(): string
