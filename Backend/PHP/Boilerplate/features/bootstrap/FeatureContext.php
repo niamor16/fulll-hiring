@@ -17,6 +17,8 @@ use Fulll\Domain\Model\Vehicle\Vehicle;
 use Fulll\Domain\Model\Vehicle\VehicleRepositoryInterface;
 use Fulll\Infra\Persistence\InMemory\InMemoryFleetRepository;
 use Fulll\Infra\Persistence\InMemory\InMemoryVehicleRepository;
+use Fulll\Infra\Persistence\Sql\SqlFleetRepository;
+use Fulll\Infra\Persistence\Sql\SqlVehicleRepository;
 
 #[\AllowDynamicProperties]
 class FeatureContext implements Context
@@ -42,8 +44,13 @@ class FeatureContext implements Context
         $this->otherFleetId = UniqId::new();
         $this->myUserId = UniqId::new();
         $this->otherUserId = UniqId::new();
-        $this->fleetRepository = new InMemoryFleetRepository();
-        $this->vehicleRepository = new InMemoryVehicleRepository();
+
+//        $this->fleetRepository = new InMemoryFleetRepository();
+//        $this->vehicleRepository = new InMemoryVehicleRepository();
+        $pdo = new PDO('pgsql:host=backend-db;dbname=fleet;user=user;password=pwd');
+        $this->fleetRepository = new sqlFleetRepository($pdo);
+        $this->vehicleRepository = new sqlVehicleRepository($pdo);
+
         $this->registerVehicleHandler = new RegisterVehicleHandler($this->fleetRepository, $this->vehicleRepository);
         $this->parkVehicleHandler = new ParkVehicleHandler($this->fleetRepository, $this->vehicleRepository);
         $this->createUserFleetHandler = new CreateUserFleetHandler($this->fleetRepository);
@@ -198,12 +205,8 @@ class FeatureContext implements Context
         }
 
         $location = $vehicule->getLocation();
-        if (
-            $location?->getAltitude() !== $this->myLocation->getAltitude()
-            || $location?->getLatitude() !== $this->myLocation->getLatitude()
-            || $location?->getLongitude() !== $this->myLocation->getLongitude()
-        ) {
-            throw new \RuntimeException(sprintf('%s is expected, got %s', $location, $this->myLocation));
+        if (!$location || !$this->myLocation->equals($location)) {
+            throw new \RuntimeException(sprintf('%s is expected, got %s', $this->myLocation, $location));
         }
     }
 

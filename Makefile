@@ -6,8 +6,14 @@ build:
 up:
 	docker compose up -d
 
-backend-sh:
-	docker exec -it backend-php sh
+down:
+	docker compose down -v
+
+backend:
+	docker exec -it backend-php bash
+
+db:
+	docker exec -it backend-db bash
 
 test-backend:
 	docker compose run --rm backend-php vendor/behat/behat/bin/behat

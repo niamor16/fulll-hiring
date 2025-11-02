@@ -25,10 +25,7 @@ final class Vehicle
 
     public function setLocation(Location $location): self
     {
-        if ($this->location?->getLongitude() === $location->getLongitude()
-            && $this->location?->getLatitude() === $location->getLatitude()
-            && $this->location?->getAltitude() === $location->getAltitude()
-        ) {
+        if ($this->location && $this->location->equals($location)) {
             throw new \Exception('This location is the already known location');
         }
 

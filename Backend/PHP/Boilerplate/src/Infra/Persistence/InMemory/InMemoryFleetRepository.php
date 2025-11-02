@@ -15,14 +15,13 @@ class InMemoryFleetRepository implements FleetRepositoryInterface
         return $this->rows[(string)$fleetId] ?? null;
     }
 
-    public function save(Fleet $fleet): bool
+    public function save(Fleet $fleet): void
     {
         if (!$fleet->getId()) {
-            return false;
+            throw new \Exception('Fleet ID not set');
         }
 
         $this->rows[(string)$fleet->getId()] = $fleet;
-        return true;
     }
 
     public function findByUserId(UniqId $userId): ?Fleet

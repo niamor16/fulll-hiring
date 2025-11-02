@@ -14,13 +14,12 @@ class InMemoryVehicleRepository implements VehicleRepositoryInterface
         return $this->rows[$plate] ?? null;
     }
 
-    public function save(Vehicle $vehicle): bool
+    public function save(Vehicle $vehicle): void
     {
         if (!$vehicle->getPlate()) {
-            return false;
+            throw new \Exception('Plate not set');
         }
 
         $this->rows[$vehicle->getPlate()] = $vehicle;
-        return true;
     }
 }

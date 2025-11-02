@@ -30,9 +30,6 @@ final class ParkVehicleHandler
         }
 
         $vehicle->setLocation($command->getLocation());
-        $saved = $this->vehicleRepository->save($vehicle);
-        if (!$saved) {
-            throw new \Exception('Failed to save fleet');
-        }
+        $this->vehicleRepository->save($vehicle);
     }
 }

@@ -11,5 +11,5 @@ interface FleetRepositoryInterface
 
     public function findByUserId(UniqId $userId): ?Fleet;
 
-    public function save(Fleet $fleet): bool;
+    public function save(Fleet $fleet): void;
 }

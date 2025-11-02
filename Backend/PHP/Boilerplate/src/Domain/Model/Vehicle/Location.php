@@ -6,16 +6,16 @@ final class Location
 {
     private float $latitude;
     private float $longitude;
-    private float $altitude;
+    private ?float $altitude;
 
-    private function __construct(float $latitude, float $longitude, float $altitude)
+    private function __construct(float $latitude, float $longitude, ?float $altitude = null)
     {
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
-        $this->altitude = $altitude;
+        $this->latitude = round($latitude, 8);
+        $this->longitude = round($longitude, 8);
+        $this->altitude = $altitude ? round($altitude, 2) : null;
     }
 
-    static public function create(float $latitude, float $longitude, float $altitude = 0): self
+    static public function create(float $latitude, float $longitude, ?float $altitude = null): self
     {
         return new self($latitude, $longitude, $altitude);
     }
@@ -23,6 +23,11 @@ final class Location
     public function __toString(): string
     {
         return $this->latitude . ', ' . $this->longitude;
+    }
+
+    public function equals(Location $location): bool
+    {
+        return $this->latitude === $location->getLatitude() && $this->longitude === $location->getLongitude();
     }
 
     public function getLongitude(): float
@@ -35,7 +40,7 @@ final class Location
         return $this->latitude;
     }
 
-    public function getAltitude(): float
+    public function getAltitude(): ?float
     {
         return $this->altitude;
     }

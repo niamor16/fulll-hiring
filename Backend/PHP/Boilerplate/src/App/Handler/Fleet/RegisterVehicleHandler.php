@@ -30,9 +30,6 @@ final class RegisterVehicleHandler
         }
 
         $fleet->registerVehiclePlate($command->getVehiclePlate());
-        $saved = $this->fleetRepository->save($fleet);
-        if (!$saved) {
-            throw new \Exception('Failed to save fleet');
-        }
+        $this->fleetRepository->save($fleet);
     }
 }
