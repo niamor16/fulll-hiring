@@ -23,3 +23,12 @@ create-fleet:
 
 php-stan:
 	docker compose run --rm backend-php vendor/bin/phpstan analyse src
+
+fizzbuzz_function:
+	 docker compose run --rm algo-php php fizzbuzz_fn.php
+
+fizzbuzz_class:
+	 docker compose run --rm algo-php php FizzBuzz.php
+
+algo:
+	docker exec -it algo-php bash
