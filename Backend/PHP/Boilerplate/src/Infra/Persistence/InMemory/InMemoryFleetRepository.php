@@ -4,14 +4,15 @@ namespace Fulll\Infra\Persistence\InMemory;
 
 use Fulll\Domain\Model\Fleet\Fleet;
 use Fulll\Domain\Model\Fleet\FleetRepositoryInterface;
+use Fulll\Domain\Model\Shared\UniqId;
 
 class InMemoryFleetRepository implements FleetRepositoryInterface
 {
     private array $rows = [];
 
-    public function findById(int $fleetId): ?Fleet
+    public function findById(UniqId $fleetId): ?Fleet
     {
-        return $this->rows[$fleetId] ?? null;
+        return $this->rows[(string)$fleetId] ?? null;
     }
 
     public function save(Fleet $fleet): bool
@@ -20,7 +21,12 @@ class InMemoryFleetRepository implements FleetRepositoryInterface
             return false;
         }
 
-        $this->rows[$fleet->getId()] = $fleet;
+        $this->rows[(string)$fleet->getId()] = $fleet;
         return true;
+    }
+
+    public function findByUserId(UniqId $userId): ?Fleet
+    {
+        return array_find($this->rows, fn($row) => $row->getUserId()->equals($userId));
     }
 }

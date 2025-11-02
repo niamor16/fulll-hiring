@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 use Behat\Behat\Context\Context;
 use Fulll\App\Calculator;
+use Fulll\App\Command\Fleet\CreateUserFleet;
 use Fulll\App\Command\Fleet\RegisterVehicle;
+use Fulll\App\Handler\Fleet\CreateUserFleetHandler;
 use Fulll\App\Handler\Fleet\RegisterVehicleHandler;
 use Fulll\App\Handler\Vehicle\ParkVehicleHandler;
 use Fulll\Domain\Model\Fleet\Fleet;
 use Fulll\Domain\Model\Fleet\FleetRepositoryInterface;
+use Fulll\Domain\Model\Shared\UniqId;
 use Fulll\Domain\Model\Vehicle\Location;
 use Fulll\Domain\Model\Vehicle\Vehicle;
 use Fulll\Domain\Model\Vehicle\VehicleRepositoryInterface;
@@ -22,11 +25,12 @@ class FeatureContext implements Context
     private VehicleRepositoryInterface $vehicleRepository;
     private RegisterVehicleHandler $registerVehicleHandler;
     private ParkVehicleHandler $parkVehicleHandler;
+    private CreateUserFleetHandler $createUserFleetHandler;
 
-    private int $myUserId = 1;
-    private int $myFleetId = 1;
-    private int $otherUserId = 2;
-    private int $otherFleetId = 2;
+    private UniqId $myFleetId;
+    private UniqId $myUserId;
+    private UniqId $otherUserId;
+    private UniqId $otherFleetId;
     private string $myVehiclePlate = 'AA-123-CD';
     private ?Vehicle $myVehicle = null;
     private ?string $lastError = null;
@@ -34,10 +38,15 @@ class FeatureContext implements Context
 
     public function __construct()
     {
+        $this->myFleetId = UniqId::new();
+        $this->otherFleetId = UniqId::new();
+        $this->myUserId = UniqId::new();
+        $this->otherUserId = UniqId::new();
         $this->fleetRepository = new InMemoryFleetRepository();
         $this->vehicleRepository = new InMemoryVehicleRepository();
         $this->registerVehicleHandler = new RegisterVehicleHandler($this->fleetRepository, $this->vehicleRepository);
         $this->parkVehicleHandler = new ParkVehicleHandler($this->fleetRepository, $this->vehicleRepository);
+        $this->createUserFleetHandler = new CreateUserFleetHandler($this->fleetRepository);
     }
 
     /**
@@ -66,8 +75,7 @@ class FeatureContext implements Context
      */
     public function myFleet(): void
     {
-        $fleet = Fleet::create($this->myFleetId, $this->myUserId);
-        $this->fleetRepository->save($fleet);
+        $this->iCreateMyFleet();
     }
 
     /**
@@ -225,5 +233,58 @@ class FeatureContext implements Context
         if ($this->lastError !== 'This location is the already known location') {
             throw new \RuntimeException(sprintf('I should be informed that my vehicle is already parked at this location : %s', $this->lastError));
         }
+    }
+
+//    ===============================================
+
+    /**
+     * @Given /^my user id$/
+     */
+    public function myUserId()
+    {
+        if (!$this->myUserId) {
+            $this->myUserId = UniqId::new();
+        }
+    }
+
+    /**
+     * @Then /^my fleet should be created$/
+     */
+    public function myFleetShouldBeCreated()
+    {
+        if (!$this->fleetRepository->findById($this->myFleetId)) {
+            throw new \RuntimeException('this fleet does not exist');
+        }
+    }
+
+    /**
+     * @When /^I have already created my fleet$/
+     */
+    public function iHaveAlreadyCreatedMyFleet()
+    {
+        try {
+            $this->iCreateMyFleet();
+        } catch (\Exception $exception) {
+            $this->lastError = $exception->getMessage();
+        }
+    }
+
+    /**
+     * @Then /^I should be informed that I already have a fleet$/
+     */
+    public function iShouldBeInformedThatIAlreadyHaveAFleet()
+    {
+        if ($this->lastError !== 'A fleet already exists for this user') {
+            throw new \RuntimeException(sprintf('I should be informed that I already have a fleet : %s', $this->lastError));
+        }
+    }
+
+    /**
+     * @When /^I create my fleet$/
+     */
+    public function iCreateMyFleet()
+    {
+        $command = new CreateUserFleet($this->myUserId, $this->myFleetId);
+        $this->createUserFleetHandler->__invoke($command);
     }
 }

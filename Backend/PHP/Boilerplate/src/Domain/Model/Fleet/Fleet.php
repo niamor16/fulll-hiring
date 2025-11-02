@@ -3,26 +3,27 @@ declare(strict_types=1);
 
 namespace Fulll\Domain\Model\Fleet;
 
+use Fulll\Domain\Model\Shared\UniqId;
+
 final class Fleet
 {
-    private int $id;
-    private ?int $userId = null;
+    private UniqId $id;
+    private UniqId $userId;
 
     /**
      * @var string[]
      */
     private array $vehiclePlates = [];
 
-    public function __construct(int $id)
+    public function __construct(UniqId $id, UniqId $userId)
     {
         $this->id = $id;
+        $this->userId = $userId;
     }
 
-    static public function create(int $id, int $userId): Fleet
+    static public function create(UniqId $id, UniqId $userId): Fleet
     {
-        $fleet = new self($id);
-        $fleet->userId = $userId;
-        return $fleet;
+        return new self($id, $userId);
     }
 
     public function hasVehiclePlate(string $vehiclePlate): bool
@@ -52,8 +53,13 @@ final class Fleet
         return $this->vehiclePlates;
     }
 
-    public function getId(): int
+    public function getId(): UniqId
     {
         return $this->id;
+    }
+
+    public function getUserId(): UniqId
+    {
+        return $this->userId;
     }
 }

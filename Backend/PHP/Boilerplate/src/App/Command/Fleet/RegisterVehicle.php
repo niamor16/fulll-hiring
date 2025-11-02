@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace Fulll\App\Command\Fleet;
 
+use Fulll\Domain\Model\Shared\UniqId;
+
 final class RegisterVehicle
 {
-    private int $fleetId;
+    private UniqId $fleetId;
     private string $vehiclePlate;
 
-    public function __construct(int $fleetId, string $vehiclePlate)
+    public function __construct(UniqId $fleetId, string $vehiclePlate)
     {
         $this->fleetId = $fleetId;
         $this->vehiclePlate = $vehiclePlate;
@@ -19,7 +21,7 @@ final class RegisterVehicle
         return $this->vehiclePlate;
     }
 
-    public function getFleetId(): int
+    public function getFleetId(): UniqId
     {
         return $this->fleetId;
     }

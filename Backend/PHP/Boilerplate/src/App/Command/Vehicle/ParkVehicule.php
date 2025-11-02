@@ -2,22 +2,23 @@
 
 namespace Fulll\App\Command\Vehicle;
 
+use Fulll\Domain\Model\Shared\UniqId;
 use Fulll\Domain\Model\Vehicle\Location;
 
 final class ParkVehicule
 {
-    private int $fleetId;
+    private UniqId $fleetId;
     private string $vehiclePlate;
     private Location $location;
 
-    public function __construct(int $fleetId, string $vehiclePlate, Location $location)
+    public function __construct(UniqId $fleetId, string $vehiclePlate, Location $location)
     {
         $this->fleetId = $fleetId;
         $this->vehiclePlate = $vehiclePlate;
         $this->location = $location;
     }
 
-    public function getFleetId(): int
+    public function getFleetId(): UniqId
     {
         return $this->fleetId;
     }

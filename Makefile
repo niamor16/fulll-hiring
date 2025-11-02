@@ -1,4 +1,4 @@
-.PHONY: build up sh
+.PHONY: build up backend-sh test-backend
 
 build:
 	docker compose build
@@ -11,3 +11,6 @@ backend-sh:
 
 test-backend:
 	docker compose run --rm backend-php vendor/behat/behat/bin/behat
+
+create-fleet:
+	docker compose run --rm backend-php bin/fleet create
