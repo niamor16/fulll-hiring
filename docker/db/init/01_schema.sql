@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS vehicles (
 
 CREATE TABLE IF NOT EXISTS fleet_vehicles (
     fleet_id  VARCHAR(23) NOT NULL REFERENCES fleets(id) ON DELETE CASCADE,
-    plate     VARCHAR(16) NOT NULL,
+    plate VARCHAR(16) NOT NULL REFERENCES vehicles(plate) ON DELETE CASCADE,
     PRIMARY KEY (fleet_id, plate)
 );
 
