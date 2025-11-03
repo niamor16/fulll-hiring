@@ -24,6 +24,10 @@ final class ParkVehicleHandler
             throw new \Exception('No fleet found with id ' . $command->getFleetId());
         }
 
+        if(!$fleet->hasVehiclePlate($command->getVehiclePlate())) {
+            throw new \Exception(sprintf('No vehicle with plate %s registered in the fleet', $command->getVehiclePlate()));
+        }
+
         $vehicle = $this->vehicleRepository->findByPlate($command->getVehiclePlate());
         if (!$vehicle) {
             throw new \Exception('No vehicle found with plate ' . $command->getVehiclePlate());
