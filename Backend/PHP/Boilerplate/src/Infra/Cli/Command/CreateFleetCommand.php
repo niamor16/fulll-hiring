@@ -4,9 +4,7 @@ namespace Fulll\Infra\Cli\Command;
 
 use Fulll\App\Command\Fleet\CreateUserFleet;
 use Fulll\App\Handler\Fleet\CreateUserFleetHandler;
-use Fulll\Domain\Model\Fleet\FleetRepositoryInterface;
 use Fulll\Domain\Model\Shared\UniqId;
-use Fulll\Infra\Persistence\InMemory\InMemoryFleetRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,11 +18,10 @@ class CreateFleetCommand extends Command
 {
     private CreateUserFleetHandler $handler;
 
-    public function __construct()
+    public function __construct(CreateUserFleetHandler $handler)
     {
         parent::__construct();
-        $fleetRepository = new InMemoryFleetRepository();
-        $this->handler = new CreateUserFleetHandler($fleetRepository);
+        $this->handler = $handler;
     }
 
     protected function configure(): void

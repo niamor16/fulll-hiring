@@ -91,7 +91,7 @@ class FeatureContext implements Context
     public function aVehicle(): void
     {
         if (!$this->myVehicle) {
-            $vehicle = new Vehicle($this->myVehiclePlate);
+            $vehicle = Vehicle::create($this->myVehiclePlate);
             $this->vehicleRepository->save($vehicle);
             $this->myVehicle = $vehicle;
         }

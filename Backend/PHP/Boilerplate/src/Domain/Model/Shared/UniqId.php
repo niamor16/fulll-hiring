@@ -28,7 +28,7 @@ final class UniqId
 
     static public function new(): self
     {
-        return new self(uniqid('', true));
+        return new self(uniqid());
     }
 
     public function getId(): string

@@ -5,6 +5,7 @@ namespace Fulll\App\Handler\Fleet;
 
 use Fulll\App\Command\Fleet\RegisterVehicle;
 use Fulll\Domain\Model\Fleet\FleetRepositoryInterface;
+use Fulll\Domain\Model\Vehicle\Vehicle;
 use Fulll\Domain\Model\Vehicle\VehicleRepositoryInterface;
 
 final class RegisterVehicleHandler
@@ -26,7 +27,8 @@ final class RegisterVehicleHandler
         }
 
         if (!$this->vehicleRepository->findByPlate($command->getVehiclePlate())) {
-            throw new \Exception('No vehicle found with plate ' . $command->getVehiclePlate());
+            $vehicle = Vehicle::create($command->getVehiclePlate());
+            $this->vehicleRepository->save($vehicle);
         }
 
         $fleet->registerVehiclePlate($command->getVehiclePlate());

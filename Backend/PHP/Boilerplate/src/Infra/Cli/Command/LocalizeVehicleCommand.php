@@ -2,14 +2,10 @@
 
 namespace Fulll\Infra\Cli\Command;
 
-use Fulll\App\Command\Fleet\RegisterVehicle;
 use Fulll\App\Command\Vehicle\ParkVehicule;
-use Fulll\App\Handler\Fleet\RegisterVehicleHandler;
 use Fulll\App\Handler\Vehicle\ParkVehicleHandler;
 use Fulll\Domain\Model\Shared\UniqId;
 use Fulll\Domain\Model\Vehicle\Location;
-use Fulll\Infra\Persistence\InMemory\InMemoryFleetRepository;
-use Fulll\Infra\Persistence\InMemory\InMemoryVehicleRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,12 +19,10 @@ class LocalizeVehicleCommand extends Command
 {
     private ParkVehicleHandler $handler;
 
-    public function __construct()
+    public function __construct(ParkVehicleHandler $handler)
     {
         parent::__construct();
-        $fleetRepository = new InMemoryFleetRepository();
-        $vehicleRepository = new InMemoryVehicleRepository();
-        $this->handler = new ParkVehicleHandler($fleetRepository, $vehicleRepository);
+        $this->handler = $handler;
     }
 
     protected function configure(): void

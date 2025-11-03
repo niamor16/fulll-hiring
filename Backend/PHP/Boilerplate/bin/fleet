@@ -3,13 +3,24 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Fulll\App\Handler\Fleet\CreateUserFleetHandler;
+use Fulll\App\Handler\Fleet\RegisterVehicleHandler;
+use Fulll\App\Handler\Vehicle\ParkVehicleHandler;
+use Fulll\Infra\Persistence\Sql\SqlFleetRepository;
+use Fulll\Infra\Persistence\Sql\SqlVehicleRepository;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
 
-// ... register commands
-$application->add(new \Fulll\Infra\Cli\Command\CreateFleetCommand());
-$application->add(new \Fulll\Infra\Cli\Command\RegisterVehicleCommand());
-$application->add(new \Fulll\Infra\Cli\Command\LocalizeVehicleCommand());
+$pdo = new PDO('pgsql:host=backend-db;dbname=fleet;user=user;password=pwd');
+$fleetRepository = new SqlFleetRepository($pdo);
+$vehicleRepository = new SqlVehicleRepository($pdo);
+$parkVehiculeHandler = new ParkVehicleHandler($fleetRepository, $vehicleRepository);
+$registerVehicleHandler = new RegisterVehicleHandler($fleetRepository, $vehicleRepository);
+$createUserFleetHandler = new CreateUserFleetHandler($fleetRepository);
+
+$application->add(new \Fulll\Infra\Cli\Command\CreateFleetCommand($createUserFleetHandler));
+$application->add(new \Fulll\Infra\Cli\Command\RegisterVehicleCommand($registerVehicleHandler));
+$application->add(new \Fulll\Infra\Cli\Command\LocalizeVehicleCommand($parkVehiculeHandler));
 
 $application->run();

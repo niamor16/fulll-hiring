@@ -8,9 +8,15 @@ final class Vehicle
     private string $plate;
     private ?Location $location = null;
 
-    public function __construct(string $plate)
+    private function __construct(string $plate, ?Location $location = null)
     {
         $this->plate = $plate;
+        $this->location = $location;
+    }
+
+    static public function create(string $plate, ?Location $location = null): self
+    {
+        return new self($plate, $location);
     }
 
     public function getPlate(): string
