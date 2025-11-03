@@ -1,4 +1,4 @@
-.PHONY: build up backend-sh test-backend
+.PHONY: build up backend db test-backend php-stan algo fizzbuzz_class fizzbuzz_function
 
 build:
 	docker compose build
