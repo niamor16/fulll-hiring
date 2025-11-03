@@ -92,4 +92,16 @@ class SqlFleetRepository implements FleetRepositoryInterface
             throw $e;
         }
     }
+
+    public function reset(): void
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->exec('TRUNCATE TABLE fleets CASCADE');
+            $this->pdo->commit();
+        } catch (\Throwable $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
+    }
 }

@@ -6,4 +6,6 @@ interface VehicleRepositoryInterface
 {
     public function findByPlate(string $plate): ?Vehicle;
     public function save(Vehicle $vehicle): void;
+
+    public function reset(): void;
 }

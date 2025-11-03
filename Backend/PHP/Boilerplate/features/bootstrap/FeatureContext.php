@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Behat\Behat\Context\Context;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Fulll\App\Calculator;
 use Fulll\App\Command\Fleet\CreateUserFleet;
 use Fulll\App\Command\Fleet\RegisterVehicle;
@@ -40,10 +41,10 @@ class FeatureContext implements Context
 
     public function __construct()
     {
-        $this->myFleetId = UniqId::new();
-        $this->otherFleetId = UniqId::new();
-        $this->myUserId = UniqId::new();
-        $this->otherUserId = UniqId::new();
+        $this->myFleetId = UniqId::fromString('11111111');
+        $this->otherFleetId = UniqId::fromString('2222222222');
+        $this->myUserId = UniqId::fromString('33333333');
+        $this->otherUserId = UniqId::fromString('4444444444');
 
 //        $this->fleetRepository = new InMemoryFleetRepository();
 //        $this->vehicleRepository = new InMemoryVehicleRepository();
@@ -55,6 +56,17 @@ class FeatureContext implements Context
         $this->parkVehicleHandler = new ParkVehicleHandler($this->fleetRepository, $this->vehicleRepository);
         $this->createUserFleetHandler = new CreateUserFleetHandler($this->fleetRepository);
     }
+
+    /**
+     * @BeforeScenario
+     */
+    public function resetDb(BeforeScenarioScope $scope): void
+    {
+        $this->fleetRepository->reset();
+        $this->vehicleRepository->reset();
+    }
+
+    //    ==============================================================================
 
     /**
      * @When I multiply :a by :b into :var

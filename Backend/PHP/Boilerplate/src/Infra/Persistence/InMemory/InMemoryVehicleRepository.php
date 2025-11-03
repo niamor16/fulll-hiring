@@ -22,4 +22,9 @@ class InMemoryVehicleRepository implements VehicleRepositoryInterface
 
         $this->rows[$vehicle->getPlate()] = $vehicle;
     }
+
+    public function reset(): void
+    {
+        $this->rows = [];
+    }
 }

@@ -55,4 +55,16 @@ class SqlVehicleRepository implements VehicleRepositoryInterface
             throw $e;
         }
     }
+
+    public function reset(): void
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->exec('TRUNCATE TABLE vehicles CASCADE');
+            $this->pdo->commit();
+        } catch (\Throwable $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
+    }
 }

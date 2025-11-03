@@ -8,6 +8,9 @@ use Fulll\Domain\Model\Shared\UniqId;
 
 class InMemoryFleetRepository implements FleetRepositoryInterface
 {
+    /**
+     * @var Fleet[]
+     */
     private array $rows = [];
 
     public function findById(UniqId $fleetId): ?Fleet
@@ -27,5 +30,10 @@ class InMemoryFleetRepository implements FleetRepositoryInterface
     public function findByUserId(UniqId $userId): ?Fleet
     {
         return array_find($this->rows, fn($row) => $row->getUserId()->equals($userId));
+    }
+
+    public function reset(): void
+    {
+        $this->rows = [];
     }
 }
