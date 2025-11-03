@@ -25,9 +25,9 @@ class SqlVehicleRepository implements VehicleRepositoryInterface
         }
 
         $vehicle = Vehicle::create($plate);
-        if (!empty($result['latitude'])
-            && !empty($result['longitude'])) {
-            $location = Location::create(($result['latitude']), ($result['longitude']), ($result['altitude'] ?? 0));
+        if (!is_null($result['latitude'])
+            && !is_null($result['longitude'])) {
+            $location = Location::create(floatval($result['latitude']), floatval($result['longitude']), floatval($result['altitude'] ?? 0));
             $vehicle->setLocation($location);
         }
 
