@@ -1,7 +1,6 @@
 # Requirements
-
-- docker compose
-- (MAKE)
+To run this project you will need a computer with docker compose OR PHP and composer installed.
+Optionally install Make to use helpful Makefile commands
 
 # Start
 ```bash
@@ -12,6 +11,11 @@ docker compose build
 make up
 -- OR
 docker compose up -d
+
+make composer-install
+-- OR
+docker exec -it backend-php bash
+> composer install
 ```
 
 # Structure

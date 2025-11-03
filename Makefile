@@ -9,6 +9,9 @@ up:
 down:
 	docker compose down -v
 
+composer-install:
+	docker exec -it backend-php composer install
+
 backend:
 	docker exec -it backend-php bash
 
